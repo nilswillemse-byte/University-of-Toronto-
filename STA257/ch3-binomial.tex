@@ -1,0 +1,159 @@
+\noindent Throughout: $q = 1-p$, $n = $ number of trials, $k = $ number of successes,
+and $\ff{x}{r} = x(x-1)\cdots(x-r+1)$ is the $r$th falling factorial.
+
+\section{The Binomial Distribution}
+
+Let $S_n$ count the number of successes in Bernoulli trials $Z_i$, $i = 1,\dots,n$, with $Z_i \iid Z \sim \bern(p)$.
+
+\begin{definition}[Binomial distribution]
+The random variable $X$ has a \emph{binomial distribution on $n$ trials with probability of success per trial $p$}, denoted
+\[
+X \sim \bin(n,p), \qquad n \in \N,\ 0 \le p \le 1,
+\]
+if and only if
+\[
+X \eqd S_n = Z_1 + \cdots + Z_n \quad \text{with } Z_1,\dots,Z_n \iid Z \sim \bern(p).
+\]
+\end{definition}
+
+For $X \sim \bin(n,p)$, by linearity of expectation:
+\[
+\E X = \E S_n = \E Z_1 + \cdots + \E Z_n = n\,\E Z = np.
+\]
+\fix{The handwritten notes say ``for $X \sim \bern(p)$''. It should be $X \sim \bin(n,p)$, because a single Bernoulli has mean $p$, not $np$.}
+
+\begin{proposition}[Sums of independent binomials]
+If $X \sim \bin(m,p)$, $Y \sim \bin(n,p)$ and $X \indep Y$, then
+\[
+X + Y \sim \bin(m+n,\,p).
+\]
+\end{proposition}
+
+\begin{corollary}
+If $X_i \overset{\text{indep}}{\sim} \bin(n_i, p)$ for $i = 1,\dots,k$, then
+\[
+\sum_{i=1}^{k} X_i \sim \bin\!\Big(\sum_{i=1}^{k} n_i,\ p\Big).
+\]
+\end{corollary}
+\begin{remark}
+The success probability $p$ has to be the \emph{same} for every summand.
+\end{remark}
+
+\subsection{Deriving the pmf}
+
+Any single outcome of the $n$-vector of $Z$-trials is one of the $2^n$ sequences of $0$'s and $1$'s in $\R^n$.
+So the effective sample space for $\mathbf{Z} = (Z_1,\dots,Z_n)$ is the set of $2^n$ corners
+\[
+\{0,1\}^n, \qquad \#\{0,1\}^n = 2^n,
+\]
+of the unit cube $[0,1]^n \subset \R^n$.
+
+\begin{example}
+For $n = 2$: $\{0,1\}^2 = \{(0,0),(0,1),(1,0),(1,1)\}$.
+\end{example}
+
+Since the trials are independent,
+\[
+P(\mathbf{Z} = \mathbf{z}) = \prod_{i=1}^{n} P(Z_i = z_i) \qquad \forall\, \mathbf{z} \in \{0,1\}^n.
+\]
+
+\begin{example}
+$P\big(\mathbf{Z} = (1,1,0)\big) = P(Z_1 = 1)\,P(Z_2 = 1)\,P(Z_3 = 0) = p \cdot p \cdot q = p^2 q.$
+\end{example}
+
+Individually, $P(Z_i = z_i) = p^{z_i} q^{1-z_i}$ for $z_i \in \{0,1\}$, $i = 1,\dots,n$. Therefore
+\[
+P(\mathbf{Z} = \mathbf{z}) = p^{\sum z_i}\, q^{\,n - \sum z_i} \qquad \forall\, \mathbf{z} \in \{0,1\}^n.
+\]
+
+For each $k = 0,1,\dots,n$ define the set of corners with exactly $k$ ones:
+\[
+C_k^n = \Big\{ \mathbf{z} \in \{0,1\}^n \;\Big|\; \textstyle\sum z_i = k \Big\}.
+\]
+\fix{The notes have $k = 1,\dots,n$. It should start at $k = 0$, because zero successes is a possible outcome.}
+
+\begin{example}
+For $n = 3$, $k = 2$: $C_2^3 = \{011,\,101,\,110\}$.
+\end{example}
+
+Then $S_n = k \iff \mathbf{Z} \in C_k^n$, so
+\[
+P(S_n = k) = \sum_{\mathbf{z} \in C_k^n} P(\mathbf{Z} = \mathbf{z})
+= \sum_{\mathbf{z} \in C_k^n} p^{\sum z_i} q^{\,n-\sum z_i}
+= \#C_k^n \cdot p^k q^{n-k}.
+\]
+Every term in the sum is the same, $p^k q^{n-k}$, which is why the sum collapses to a count.
+
+\begin{example}
+$P(S_3 = 2) = P(011) + P(101) + P(110) = 3p^2 q$.
+\end{example}
+\fix{The notes list $P(001) + P(110) + P(101)$. But $001$ has only one success, so it should be $011$.}
+
+Writing $\#C_k^n = \binom{n}{k}$ (``$n$ choose $k$''):
+
+\begin{definition}[Binomial pmf]
+For $X \sim \bin(n,p)$,
+\[
+P(X = k) = \binom{n}{k} p^k q^{n-k}, \qquad k = 0,1,\dots,n.
+\]
+\end{definition}
+
+\begin{corollary}
+For any $n \in \N$ and $0 \le p \le 1$,
+\[
+\sum_{k=0}^{n} \binom{n}{k} p^k q^{n-k} = \sum_{k=0}^{n} P(S_n = k) = 1.
+\]
+\end{corollary}
+
+\begin{corollary}
+\[
+\binom{n}{k} = \frac{\ff{n}{k}}{k!} = \frac{n(n-1)\cdots(n-k+1)}{k!}.
+\]
+\end{corollary}
+
+\begin{proposition}[Behaviour in $n$ for fixed $k$]
+For fixed $k$:
+\begin{enumerate}[label=(\roman*)]
+  \item for $n > k/p$, $P(S_n = k)$ is strictly decreasing in $n$;
+  \item $\displaystyle\lim_{n\to\infty} P(S_n = k) = 0$.
+\end{enumerate}
+\end{proposition}
+
+\subsection{Factorial moments}
+
+Computing $\E X^2, \E X^3, \dots$ directly from the pmf is messy. Falling factorials make it easy:
+\[
+\ff{X}{r} = X(X-1)\cdots(X-r+1).
+\]
+
+\begin{proposition}
+For $X \sim \bin(n,p)$ and $r = 1,\dots,n$,
+\[
+\E \ff{X}{r} = \sum_{k=0}^{n} \ff{k}{r} \binom{n}{k} p^k q^{n-k} = \ff{n}{r}\, p^r,
+\]
+and $\E \ff{X}{r} = 0$ for $r > n$.
+\end{proposition}
+
+\begin{example}[Second moment and variance]
+$\ff{X}{2} = X(X-1) = X^2 - X$, so
+\[
+\ff{n}{2} p^2 = \E \ff{X}{2} = \E X^2 - \E X = \E X^2 - np.
+\]
+Hence
+\[
+\E X^2 = n(n-1)p^2 + np, \qquad
+\operatorname{var} X = \E X^2 - (\E X)^2 = n(n-1)p^2 + np - n^2p^2 = npq.
+\]
+\end{example}
+\fix{The notes conclude $\E \ff{X}{2} = n^2 p^2$. That's wrong: $\ff{n}{2} = n(n-1)$, not $n^2$. If you use $n^2$, you get $\E X^2 = n^2p^2 + np$ and $\operatorname{var} X = np$, both of which are wrong.}
+
+\section{The Negative-Binomial Distribution}
+
+Let $T_k$ count the number of trials required until (and including) the $k$th success:
+\[
+T_k = \min\{ n \in \N \mid S_n \ge k \}.
+\]
+
+\begin{center}
+\color{Gray}\itshape [Notes incomplete --- section to be continued.]
+\end{center}
