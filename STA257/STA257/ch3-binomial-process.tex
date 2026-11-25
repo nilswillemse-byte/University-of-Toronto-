@@ -1,0 +1,153 @@
+\section{The Binomial Process (pp.\ 27--39)}
+
+\subsection{The conjugate relation}
+
+The binomial $S_n$ (successes in $n$ trials) and the negative binomial $T_k$ (trials to reach $k$ successes) are two views of the same sequence of Bernoulli trials. One picture links them:
+
+\begin{center}
+\emph{You wait longer than $n$ trials for the $k$th success $\iff$ fewer than $k$ successes in the first $n$ trials.}
+\end{center}
+
+\begin{proposition}[Conjugate relation]
+For all $k, n \in \N$,
+\[
+T_k > n \iff S_n < k, \qquad\qquad T_k \le n \iff S_n \ge k.
+\]
+\end{proposition}
+
+\begin{remark}
+This is the main computational tool here. Any question about the \emph{waiting time} $T_k$ can be turned into a question about the \emph{count} $S_n$, which is a binomial with a finite sum:
+\[
+P(T_k \le n) = P(S_n \ge k), \qquad P(T_k > n) = \sum_{i=0}^{k-1}\binom{n}{i}p^iq^{n-i}.
+\]
+\end{remark}
+
+\begin{proposition}[Binomial $\leftrightarrow$ negative-binomial connection]
+Suppose $(X_n)$ and $(Y_k)$ are integer-valued processes with $Y_k > n \iff X_n < k$ for all $k,n$. Then
+\[
+X_n \sim \bin(n,p)\ \ \forall n \iff Y_k \sim \negbin(k,p)\ \ \forall k.
+\]
+\end{proposition}
+\begin{proof}[Idea]
+($\Rightarrow$) Take differences of the CDF and translate each term with the conjugate relation:
+\[
+P(Y_k = n) = P(Y_k \le n) - P(Y_k \le n-1) = P(X_n \ge k) - P(X_{n-1} \ge k).
+\]
+Because $X_n \eqd S_n$, this equals $P(S_n \ge k) - P(S_{n-1}\ge k) = P(T_k = n)$.
+($\Leftarrow$) is the same, starting from $P(X_n = k) = P(X_n < k+1) - P(X_n < k)$.
+\end{proof}
+\begin{remark}
+The chapter first proves this by induction using Pascal's identity, then shows the ``structural'' proof above. You only need to know the structural one; the combinatorial lemmas are just this one-line argument written out.
+\end{remark}
+
+\subsection{The binomial process}
+
+Fix $(Z_n)\iid\bern(p)$, $0<p<1$, with partial sums $S_n = Z_1+\cdots+Z_n$ and $S_0 = 0$.
+
+\begin{definition}[Binomial process]
+A sequence $(X_n, n\in\N)$ is a \emph{binomial process} if its \emph{entire joint distribution} equals that of the partial sums:
+\[
+(X_n, n \in \N) \eqd (S_n, n \in \N).
+\]
+\end{definition}
+
+\begin{remark}[Why ``joint'' matters]
+$X_n \eqd S_n$ for each $n$ separately says nothing about how $X_3$ and $X_7$ relate. Joint equality in distribution survives any transformation, including taking differences. So it forces the increments to behave like $S$'s increments.
+\end{remark}
+
+\begin{proposition}[Independent increments]
+For $0 = n_0 < n_1 < n_2 < \cdots$,
+\[
+X_{n_{i+1}} - X_{n_i} \overset{\text{indep}}{\sim} \bin(n_{i+1}-n_i,\ p), \qquad i = 0,1,2,\dots
+\]
+\end{proposition}
+\begin{remark}
+Each increment is $\sum_{j=n_i+1}^{n_{i+1}} Z_j$. Different increments use disjoint blocks of trials, so they're independent.
+\end{remark}
+
+\begin{definition}[Counting and waiting-time processes]
+\[
+X_n = \text{number of successes in a fixed } n \text{ trials} \quad (\text{counting process}),
+\]
+\[
+Y_k = \text{number of trials for a fixed } k \text{ successes} \quad (\text{waiting-time process}).
+\]
+\end{definition}
+
+\begin{theorem}[Reciprocity]\label{thm:recip}
+For reciprocal processes ($Y_k > n \iff X_n < k$),
+\begin{gather*}
+X_{n_{i+1}} - X_{n_i} \overset{\text{indep}}{\sim} \bin(n_{i+1}-n_i,\ p)\quad \forall\, 0<n_1<n_2<\cdots\\
+\Updownarrow\\
+Y_{k_{j+1}} - Y_{k_j} \overset{\text{indep}}{\sim} \negbin(k_{j+1}-k_j,\ p)\quad \forall\, 0<k_1<k_2<\cdots
+\end{gather*}
+\end{theorem}
+\begin{remark}
+In words, there are two equivalent descriptions of the same process: \emph{independent counts over disjoint blocks of trials}, or \emph{independent waits between successes}. Special case: the gaps $W_k = Y_k - Y_{k-1}$ are IID $\geo(p)$, which recovers $T_k = W_1+\cdots+W_k$.
+\end{remark}
+\begin{proof}[Key step]
+For $k_1 < k_2$, the event $\{Y_{k_1}=n_1,\ Y_{k_2}-Y_{k_1}=n_2\}$ says: the $k_1$th success is at trial $n_1$, and the next $k_2-k_1$ successes take exactly $n_2$ more trials. These events involve disjoint blocks of trials, so
+\[
+P(Y_{k_1}=n_1,\ Y_{k_2}-Y_{k_1}=n_2) = P(T_{k_1}=n_1)\,P(T_{k_2-k_1}=n_2).
+\]
+The joint pmf factors, which gives both independence and the negative-binomial law of the gap.
+\end{proof}
+
+\subsection{Application: the problem of the points}
+
+$A$ needs $M$ points before $B$ gets $N$, and each point is an independent $\bern(p)$ win for $A$. $A$ wins $\iff$ $A$'s $M$th point arrives before $B$'s $N$th, i.e.\ within the first $M+N-1$ points:
+\[
+P(A \text{ wins}) = P(T_M \le M+N-1) = P(S_{M+N-1} \ge M).
+\]
+\begin{example}
+\begin{itemize}[nosep]
+  \item $M=N$, $p=\tfrac12$: by symmetry $S_{2N-1} \eqd (2N-1) - S_{2N-1}$, so $P(S_{2N-1}\ge N) = P(S_{2N-1}\le N-1)$. The two events are complementary, so each has probability $\tfrac12$.
+  \item Pascal and Fermat's case, $M=2$, $N=4$, $p=\tfrac12$: $P(S_5\ge2) = 1-\frac{1+5}{32} = \frac{26}{32}$.
+\end{itemize}
+\end{example}
+
+\subsection{The geometric via tails}
+
+For $W\sim\geo(p)$, the conjugate relation gives the tail directly:
+\[
+P(W > n) = P(S_n < 1) = P(S_n = 0) = q^n, \qquad P(W \ge n) = q^{n-1}.
+\]
+
+\begin{proposition}[Tail-sum formulas]
+\[
+\E W = \sum_{n=1}^{\infty} P(W\ge n) = \sum_{n=1}^\infty q^{n-1} = \frac1p,
+\qquad
+\E W^2 = \sum_{n=1}^\infty (2n-1)\,P(W\ge n) = \frac{1+q}{p^2}.
+\]
+\end{proposition}
+\begin{remark}
+These come from writing $n = \sum_{m=1}^{n} 1$ and $n^2 = \sum_{m=1}^{n}(2m-1)$, then swapping the order of summation. This gives the same answers as the derivative method in \S2, but works for any non-negative integer variable. Exercise from the text: show that $P(W\ge n) = p\sum_{k\ge n}P(W\ge k)$.
+\end{remark}
+
+\subsection{Practice (ESP, p.\ 21 and p.\ 39)}
+
+\begin{enumerate}[label=\textbf{P\arabic*.},leftmargin=*]
+  \item $Z_i \iid \bern(\tfrac14)$. Find (a) $P(Z_1+Z_2=0,\ Z_3+Z_4=1,\ Z_5+Z_6=2)$; (b) $P\big(Z_1=0,\ Z_2+Z_4=1 \,\big|\, \sum_{i=1}^6 Z_i=3\big)$.
+  \item $X_i \overset{\text{indep}}{\sim}\bin(i,\tfrac12)$. (a) $P(X_1+X_2+X_3\le3)=k/32$; (b) $P(X_1+X_3=2\mid X_1+X_2+X_3\le3)=k/7$; (c) $\E(3X_1-2X_2-X_3)^2$.
+  \item $X\sim\bin(2,\tfrac34)$, $Y\sim\bin(3,\tfrac12)$, $X\indep Y$. (a) $\E Z$ for $Z = X^2Y$; (b) $P(Y=X+1)$.
+  \item $W_i\iid\geo(\tfrac25)$. (a) $P\big(\sum_{i=1}^5W_i=9\big)$; (b) $P\big(W_1=3,\ W_2+W_5=3\,\big|\,\sum_{i=1}^5W_i=9\big)=k/35$.
+  \item $X,Y,Z\iid\geo(\tfrac23)$. (a) $P(X+Y+Z\le10)$; (b) $P(X^2+Y^2+Z^2\le10)$; (c) $P(X-Y=10)$; (d) $P(X+Z=5,\ Y+Z=5)$; (e) $\E(3X-2Y-Z)$ and $\E\big[(3X-2Y-Z)/X\big]$.
+\end{enumerate}
+
+\newpage
+\subsection*{Answers}
+\begin{enumerate}[label=\textbf{P\arabic*.},leftmargin=*]
+  \item (a) $3^3/2^{11}$ \quad (b) $3/10$ \hfill \emph{(given in the text)}
+  \item (a) $k=21$ \quad (b) $k=3$ \quad (c) $9$ \hfill \emph{(given in the text)}
+  \item (a) $63/16$ \quad (b) $15/64$ \hfill \emph{(given in the text)}
+  \item (a) $\binom84 p^5q^4 = \dfrac{36288}{390625}\approx 0.0929$ \quad (b) $k = 2$.\\
+  \emph{Hint for (b): given the sum, every $(w_1,\dots,w_5)$ with $w_i\ge1$ and $\sum w_i=9$ has the same probability $p^5q^4$. So the answer is a count: $\frac{2\cdot2}{\binom84} = \frac{4}{70}$.}
+  \item (a) $P(T_3\le10)=P(S_{10}\ge3) = \dfrac{19616}{19683}$ \\
+  (b) $p^3(1+3q+3q^2) = \dfrac{56}{81}$ \\
+  (c) $\dfrac{p\,q^{10}}{1+q} = \dfrac{1}{118098}$ \\
+  (d) $\sum_{z=1}^{4} p^3 q^{7-z} = \dfrac{320}{19683}$ \\
+  (e) $0$, and $3 - \dfrac3p\,\E\tfrac1X = 3 - 9\ln\tfrac32 \approx -0.649$, using $\E\tfrac1X = \dfrac{p}{q}\ln\dfrac1p$.
+\end{enumerate}
+\begin{remark}
+In (e), $\E[(3X-2Y-Z)/X] \ne \E(3X-2Y-Z)/\E X$. Split it as $3 - (2Y+Z)\cdot\tfrac1X$ and use independence: $\E[(2Y+Z)/X] = \E(2Y+Z)\,\E(1/X)$.
+\end{remark}

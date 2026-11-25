@@ -1,0 +1,36 @@
+% nils.sty -- shared preamble for all course notes
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{nils}
+\RequirePackage[margin=1in]{geometry}
+\RequirePackage{amsmath,amssymb,amsthm,mathtools}
+\RequirePackage[dvipsnames]{xcolor}
+\RequirePackage{enumitem}
+\RequirePackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=MidnightBlue}
+
+% ---------- theorem environments ----------
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}[definition]{Example}
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+% ---------- correction marker ----------
+\newcommand{\fix}[1]{\par\smallskip\noindent{\color{BrickRed}\small\textbf{Correction.} #1}\par\smallskip}
+
+% ---------- notation ----------
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\iid}{\overset{\text{IID}}{\sim}}
+\newcommand{\eqd}{\overset{d}{=}}
+\newcommand{\indep}{\perp\!\!\!\perp}
+\newcommand{\bern}{\operatorname{bern}}
+\newcommand{\bin}{\operatorname{bin}}
+\newcommand{\negbin}{\operatorname{negbin}}
+\newcommand{\geo}{\operatorname{geo}}
+\newcommand{\ff}[2]{#1^{(#2)}} % falling factorial

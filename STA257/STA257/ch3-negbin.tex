@@ -1,0 +1,168 @@
+\section{The Geometric \& Negative-Binomial Distributions}
+
+The binomial $S_n$ counts successes in a \emph{fixed} number of trials. Here it's the other way round: count the \emph{trials} needed to reach a fixed number of successes.
+
+Let $Z_n \iid Z \sim \bern(p)$, $n \in \N$, and $S_n = Z_1 + \cdots + Z_n$. For each $k \in \N$, let $T_k$ count the number of trials required until (and including) the $k$th success:
+\[
+T_k = \min\{\, n \in \N \mid S_n \ge k \,\}.
+\]
+
+\begin{definition}[Negative-binomial distribution]
+The random variable $Y$ has a \emph{negative-binomial distribution on $k$ successes}, denoted
+\[
+Y \sim \negbin(k,p), \qquad 0 < p \le 1,\ k \in \N,
+\]
+if and only if $Y \eqd T_k$.
+\end{definition}
+
+\subsection{Well-definedness}
+
+The set $\{n \in \N \mid S_n \ge k\}$ depends on the whole random sequence, so it's random. We need it to be non-empty with probability $1$, otherwise $T_k$ isn't defined.
+
+\begin{proposition}
+$P\big(\{n \in \N \mid S_n \ge k\} \ne \varnothing\big) = 1$ for all $k \in \N$.
+\end{proposition}
+\begin{proof}[Idea]
+Work with the complement. For every $n$,
+$P\big(\bigcap_{m} \{S_m < k\}\big) \le P(S_n < k)$. Take $n$ large enough that $np - k > 0$. Then
+\[
+P(S_n < k) \le P\big(|S_n - np| > np - k\big) \le \frac{\E(S_n - np)^2}{(np-k)^2} = \frac{npq}{(np-k)^2} \xrightarrow[n\to\infty]{} 0. \qedhere
+\]
+\end{proof}
+
+So $P(T_k \in \N) = 1 = \sum_{n=k}^{\infty} P(T_k = n)$.
+
+\begin{remark}
+At the minimum you hit $k$ exactly: $S_{T_k} = k$. If you overshot, then $S_{T_k - 1} \ge k$ and $T_k$ wouldn't be the minimum. Hence equivalently
+\[
+T_k = \min\{\, n \in \N \mid S_n = k \,\}.
+\]
+\end{remark}
+
+\subsection{The pmf}
+
+The $k$th success happens on trial $n$ if and only if there are exactly $k-1$ successes in the first $n-1$ trials \emph{and} trial $n$ is a success:
+\[
+\{T_k = n\} = \Big\{ \textstyle\sum_{i=1}^{n-1} Z_i = k-1,\ Z_n = 1 \Big\}, \qquad n \ge k.
+\]
+The two pieces involve disjoint trials, so they're independent and you multiply:
+
+\begin{definition}[Negative-binomial pmf]
+For $Y \sim \negbin(k,p)$,
+\[
+P(Y = n) = \underbrace{\binom{n-1}{k-1} p^{k-1} q^{n-k}}_{k-1 \text{ successes in } n-1} \cdot \underbrace{p}_{\text{trial } n}
+= \binom{n-1}{k-1} p^k q^{n-k}, \qquad n = k, k+1, \dots
+\]
+\end{definition}
+
+\begin{remark}
+It's $\binom{n-1}{k-1}$, not $\binom{n}{k}$, because the last trial is \emph{fixed} as a success. Only the first $n-1$ positions are free. This is exactly the ``pin some positions, count the rest'' move from ESP 13(b).
+\end{remark}
+
+\subsection{The geometric distribution}
+
+Take $k = 1$:
+\[
+P(T_1 = n) = P\Big(\textstyle\sum_{i=1}^{n-1} Z_i = 0,\ Z_n = 1\Big) = p\,q^{n-1}, \qquad n = 1,2,\dots
+\]
+
+\begin{definition}[Geometric distribution]
+The random variable $W$ has a \emph{geometric distribution}, denoted $W \sim \geo(p)$, $0 < p \le 1$, if and only if $W \eqd T_1$. So $\geo(p) \equiv \negbin(1,p)$, with pmf
+\[
+P(W = n) = p\,q^{n-1}, \qquad n = 1, 2, \dots
+\]
+\end{definition}
+
+\begin{remark}[Convention]
+In this course $W$ counts \emph{trials}, including the success, so $W \ge 1$. Some books define the geometric as the number of \emph{failures} before the first success, with support $\{0,1,\dots\}$ and mean $q/p$. Check which one a problem means.
+\end{remark}
+
+\subsection{Sums and structure}
+
+The geometric is the building block: every negative-binomial is a sum of independent geometrics.
+
+\begin{proposition}[Sums of independent negative-binomials I]
+If $T \sim \negbin(k,p)$, $W \sim \geo(p)$ and $T \indep W$, then
+\[
+T + W \sim \negbin(k+1,\,p).
+\]
+\end{proposition}
+\begin{proof}[Idea]
+Condition on $W$ and use independence. For $n \ge k+1$,
+\[
+P(T + W = n) = \sum_{j=k}^{n-1} P(T = j)\,P(W = n - j).
+\]
+Read each term on one Bernoulli sequence: the $k$th success at trial $j$, then no successes on trials $j+1,\dots,n-1$, then a success at trial $n$. These events are disjoint in $j$, and their union is $\{S_{n-1} = k,\ Z_n = 1\} = \{T_{k+1} = n\}$.
+\end{proof}
+
+\begin{corollary}[Structure of the negative-binomial]
+\[
+T \sim \negbin(k,p) \iff T \eqd \sum_{i=1}^{k} W_i \quad \text{with } W_i \iid W \sim \geo(p).
+\]
+\end{corollary}
+\begin{remark}
+Intuition: $W_1$ is the wait for the 1st success, $W_2$ is the \emph{extra} wait from the 1st to the 2nd success, and so on. Independent trials mean each wait starts fresh.
+\end{remark}
+
+\begin{corollary}[Sums of independent negative-binomials II]
+If $S \sim \negbin(k,p)$, $T \sim \negbin(l,p)$ and $S \indep T$, then $S + T \sim \negbin(k+l,\,p)$.
+\end{corollary}
+
+\begin{corollary}[Sums of independent negative-binomials III]
+If $T_i \overset{\text{indep}}{\sim} \negbin(k_i, p)$, $i = 1,\dots,n$, then
+\[
+\sum_{i=1}^{n} T_i \sim \negbin\!\Big(\sum_{i=1}^{n} k_i,\ p\Big).
+\]
+\end{corollary}
+\begin{remark}
+As with the binomial, $p$ must be the same for every summand.
+\end{remark}
+
+\subsection{Moments}
+
+\begin{proposition}[Mean of the geometric]
+For $W \sim \geo(p)$,
+\[
+\E W = \sum_{i=1}^{\infty} i\,p\,q^{i-1} = p \sum_{i=1}^{\infty} i\,q^{i-1} = p\,\frac{d}{dq}\sum_{i=0}^{\infty} q^i = p\,\frac{d}{dq}\frac{1}{1-q} = \frac{p}{(1-q)^2} = \frac{1}{p}.
+\]
+\end{proposition}
+\begin{remark}
+This matches intuition: $p$ is the average number of successes per trial, and $1/p$ is the average number of trials per success.
+\end{remark}
+
+\paragraph{Factorial moments.}
+Let $f(q) = \dfrac{1}{1-q} = \displaystyle\sum_{i=0}^{\infty} q^i$ for $|q| < 1$. Differentiating $r$ times,
+\[
+f^{(r)}(q) = \frac{r!}{(1-q)^{r+1}} = \sum_{i=r}^{\infty} \ff{i}{r}\, q^{i-r}.
+\]
+
+\begin{proposition}[Factorial moments of the geometric]
+For $W \sim \geo(p)$ and $r = 1, 2, \dots$,
+\[
+\E \ff{W}{r} = \sum_{i=1}^{\infty} \ff{i}{r}\, p\, q^{i-1} = p\,q^{r-1} \sum_{i=r}^{\infty} \ff{i}{r} q^{i-r} = r!\,\frac{q^{r-1}}{p^r}.
+\]
+\end{proposition}
+
+\begin{corollary}[Summary]
+For $W \sim \geo(p)$ and $T_k \sim \negbin(k,p)$:
+\[
+\E W = \frac1p, \qquad
+\E W(W-1) = \frac{2q}{p^2}, \qquad
+\E W^2 = \frac{2q}{p^2} + \frac1p = \frac{1+q}{p^2},
+\]
+\[
+\operatorname{var} W = \frac{1+q}{p^2} - \frac{1}{p^2} = \frac{q}{p^2}, \qquad
+\E T_k = \frac{k}{p}, \qquad
+\operatorname{var} T_k = \frac{kq}{p^2}.
+\]
+\end{corollary}
+\begin{remark}
+$\E T_k$ and $\operatorname{var} T_k$ follow from the structure corollary: $T_k$ is a sum of $k$ IID geometrics, so the means add, and the variances add by independence. The two variance formulas aren't written out in the chapter; they follow directly from the moments above.
+\end{remark}
+
+\subsection{A shortcut: the tail}
+
+\[
+P(W > n) = P(\text{first } n \text{ trials all fail}) = q^n, \qquad n = 0,1,2,\dots
+\]
+This is often the fastest route to problems like $P(X + Y \le 4)$ or $P(X = Y)$ for IID geometrics.
